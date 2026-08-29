@@ -22,13 +22,50 @@
     }
   ],
   "skills": [
-    { "group": "Languages", "items": ["TypeScript", "JavaScript", "Go", "Python", "SQL", "Bash"] },
-    { "group": "Frontend", "items": ["React", "Next.js", "Astro", "Tailwind CSS"] },
-    { "group": "Backend", "items": ["Node.js", "NestJS", "Express", "PostgreSQL", "Redis"] },
+    {
+      "group": "Languages",
+      "items": [
+        "TypeScript",
+        "JavaScript",
+        "SQL",
+        "Bash"
+      ]
+    },
+    {
+      "group": "Frontend",
+      "items": [
+        "Next.js",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "group": "Backend",
+      "items": [
+        "Node.js",
+        "NestJS",
+        "Express",
+        "PostgreSQL",
+        "Redis"
+      ]
+    },
     {
       "group": "Platform",
-      "items": ["Docker", "Kubernetes", "Terraform", "GitHub Actions", "Nginx", "Linux"]
+      "items": [
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "Argo CD",
+        "Nginx",
+        "Linux"
+      ]
     },
-    { "group": "Observability", "items": ["Prometheus", "Grafana", "Loki"] }
+    {
+      "group": "Observability",
+      "items": [
+        "Prometheus",
+        "Grafana",
+        "Loki"
+      ]
+    }
   ]
 }

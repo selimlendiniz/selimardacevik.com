@@ -22,13 +22,50 @@
     }
   ],
   "skills": [
-    { "group": "Diller", "items": ["TypeScript", "JavaScript", "Go", "Python", "SQL", "Bash"] },
-    { "group": "Frontend", "items": ["React", "Next.js", "Astro", "Tailwind CSS"] },
-    { "group": "Backend", "items": ["Node.js", "NestJS", "Express", "PostgreSQL", "Redis"] },
+    {
+      "group": "Diller",
+      "items": [
+        "TypeScript",
+        "JavaScript",
+        "SQL",
+        "Bash"
+      ]
+    },
+    {
+      "group": "Frontend",
+      "items": [
+        "Next.js",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "group": "Backend",
+      "items": [
+        "Node.js",
+        "NestJS",
+        "Express",
+        "PostgreSQL",
+        "Redis"
+      ]
+    },
     {
       "group": "Platform",
-      "items": ["Docker", "Kubernetes", "Terraform", "GitHub Actions", "Nginx", "Linux"]
+      "items": [
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "Argo CD",
+        "Nginx",
+        "Linux"
+      ]
     },
-    { "group": "İzleme", "items": ["Prometheus", "Grafana", "Loki"] }
+    {
+      "group": "İzleme",
+      "items": [
+        "Prometheus",
+        "Grafana",
+        "Loki"
+      ]
+    }
   ]
 }
