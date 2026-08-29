@@ -30,6 +30,7 @@
     {
       "group": "Diller",
       "items": [
+        "Java",
         "TypeScript",
         "JavaScript",
         "SQL",
@@ -46,9 +47,7 @@
     {
       "group": "Backend",
       "items": [
-        "Node.js",
-        "NestJS",
-        "Express",
+        "Spring Boot",
         "PostgreSQL",
         "Redis"
       ]
