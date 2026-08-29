@@ -1,0 +1,34 @@
+---
+import { SITE } from '~/config';
+import { route, useTranslations, type Lang } from '~/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 border-t border-line dark:border-line-dark">
+  <div
+    class="mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 px-5 py-6 text-sm text-ink-muted dark:text-ink-muted-dark"
+  >
+    <span>© {year} {SITE.name}. {t('footer.rights')}</span>
+    <div class="ms-auto flex items-center gap-4">
+      <a class="hover:text-accent dark:hover:text-accent-dark" href={`mailto:${SITE.email}`}>
+        {t('contact.email')}
+      </a>
+      <a class="hover:text-accent dark:hover:text-accent-dark" href={SITE.social.github} rel="me noopener">
+        GitHub
+      </a>
+      <a class="hover:text-accent dark:hover:text-accent-dark" href={SITE.social.linkedin} rel="me noopener">
+        LinkedIn
+      </a>
+      <a class="hover:text-accent dark:hover:text-accent-dark" href={route(lang, 'rss')}>
+        {t('footer.rss')}
+      </a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,48 @@
+---
+import BaseHead from '~/components/BaseHead.astro';
+import Header from '~/components/Header.astro';
+import Footer from '~/components/Footer.astro';
+import { useTranslations, type Lang } from '~/i18n/utils';
+import '~/styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: Lang;
+  alternates?: Partial<Record<Lang, string>>;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+}
+
+const { title, description, lang, alternates, image, type, publishedTime } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      lang={lang}
+      alternates={alternates}
+      image={image}
+      type={type}
+      publishedTime={publishedTime}
+    />
+  </head>
+  <body class="flex min-h-screen flex-col font-sans">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:rounded-md focus:bg-paper-raised focus:px-3 focus:py-2 dark:focus:bg-paper-raised-dark"
+    >
+      {t('nav.skipToContent')}
+    </a>
+    <Header lang={lang} alternates={alternates} />
+    <main id="main" class="mx-auto w-full max-w-3xl flex-1 px-5 py-12">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

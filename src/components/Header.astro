@@ -1,0 +1,67 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { SITE } from '~/config';
+import { otherLang, route, useTranslations, type Lang } from '~/i18n/utils';
+import { routes } from '~/i18n/ui';
+
+interface Props {
+  lang: Lang;
+  alternates?: Partial<Record<Lang, string>>;
+}
+
+const { lang, alternates = {} } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+const switchTo = alternates[other] ?? routes[other].home;
+
+const links = [
+  { href: route(lang, 'blog'), label: t('nav.blog') },
+  { href: route(lang, 'projects'), label: t('nav.projects') },
+  { href: route(lang, 'cv'), label: t('nav.cv') },
+] as const;
+
+const current = Astro.url.pathname;
+const isActive = (href: string) => current === href || current.startsWith(href);
+---
+
+<header class="border-b border-line dark:border-line-dark">
+  <div class="mx-auto flex max-w-3xl items-center gap-4 px-5 py-4">
+    <a
+      href={route(lang, 'home')}
+      class="font-semibold tracking-tight hover:text-accent dark:hover:text-accent-dark"
+    >
+      {SITE.name}
+    </a>
+
+    <nav aria-label={t('nav.menu')} class="ms-auto flex items-center gap-4 text-sm">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class:list={[
+              'transition hover:text-accent dark:hover:text-accent-dark',
+              isActive(link.href)
+                ? 'text-ink dark:text-ink-dark'
+                : 'text-ink-muted dark:text-ink-muted-dark',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={switchTo}
+        hreflang={other}
+        aria-label={t('lang.label')}
+        class="rounded-md border border-line px-2 py-1 text-sm text-ink-muted transition hover:text-ink dark:border-line-dark dark:text-ink-muted-dark dark:hover:text-ink-dark"
+      >
+        {t('lang.switchTo')}
+      </a>
+      <ThemeToggle lang={lang} />
+    </div>
+  </div>
+</header>
