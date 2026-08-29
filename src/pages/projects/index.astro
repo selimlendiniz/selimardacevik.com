@@ -1,0 +1,18 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Projects from '~/components/pages/Projects.astro';
+import { routes } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t('projects.title')}
+  description={t('projects.description')}
+  lang={lang}
+  alternates={{ en: routes.en.projects, tr: routes.tr.projects }}
+>
+  <Projects lang={lang} />
+</BaseLayout>

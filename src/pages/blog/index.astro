@@ -1,0 +1,18 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BlogIndex from '~/components/pages/BlogIndex.astro';
+import { routes } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t('blog.title')}
+  description={t('blog.description')}
+  lang={lang}
+  alternates={{ en: routes.en.blog, tr: routes.tr.blog }}
+>
+  <BlogIndex lang={lang} />
+</BaseLayout>

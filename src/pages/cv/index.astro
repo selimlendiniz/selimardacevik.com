@@ -1,0 +1,18 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Cv from '~/components/pages/Cv.astro';
+import { routes } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t('cv.title')}
+  description={t('cv.description')}
+  lang={lang}
+  alternates={{ en: routes.en.cv, tr: routes.tr.cv }}
+>
+  <Cv lang={lang} />
+</BaseLayout>

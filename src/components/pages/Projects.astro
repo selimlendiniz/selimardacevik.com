@@ -1,0 +1,28 @@
+---
+import ProjectCard from '~/components/ProjectCard.astro';
+import { useTranslations, type Lang } from '~/i18n/utils';
+import { getProjects } from '~/lib/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+---
+
+<h1 class="text-3xl font-bold tracking-tight">{t('projects.title')}</h1>
+<p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{t('projects.description')}</p>
+
+{
+  projects.length === 0 ? (
+    <p class="mt-8 text-ink-muted dark:text-ink-muted-dark">{t('projects.empty')}</p>
+  ) : (
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      {projects.map((project) => (
+        <ProjectCard project={project} lang={lang} />
+      ))}
+    </div>
+  )
+}

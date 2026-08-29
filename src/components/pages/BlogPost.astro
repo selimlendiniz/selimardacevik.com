@@ -1,0 +1,65 @@
+---
+import { render } from 'astro:content';
+import FormattedDate from '~/components/FormattedDate.astro';
+import { route, tagPath, useTranslations, readingTime, type Lang } from '~/i18n/utils';
+import type { Post } from '~/lib/content';
+
+interface Props {
+  post: Post;
+  lang: Lang;
+}
+
+const { post, lang } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(post);
+---
+
+<article>
+  <header class="border-b border-line pb-6 dark:border-line-dark">
+    <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{post.data.title}</h1>
+    <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted dark:text-ink-muted-dark">
+      <FormattedDate date={post.data.pubDate} lang={lang} />
+      <span aria-hidden="true">·</span>
+      <span>{readingTime(post.body, lang)}</span>
+      {
+        post.data.updatedDate && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>
+              {t('blog.updatedOn')} <FormattedDate date={post.data.updatedDate} lang={lang} />
+            </span>
+          </>
+        )
+      }
+    </p>
+    {
+      post.data.tags.length > 0 && (
+        <ul class="mt-4 flex flex-wrap gap-2 text-sm">
+          {post.data.tags.map((tag) => (
+            <li>
+              <a
+                href={tagPath(lang, tag)}
+                class="rounded bg-paper-raised px-2 py-1 text-ink-muted transition hover:text-accent dark:bg-paper-raised-dark dark:text-ink-muted-dark dark:hover:text-accent-dark"
+              >
+                {tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </header>
+
+  <div
+    class="prose prose-neutral mt-8 max-w-none dark:prose-invert prose-a:text-accent dark:prose-a:text-accent-dark prose-pre:border prose-pre:border-line dark:prose-pre:border-line-dark"
+  >
+    <Content />
+  </div>
+</article>
+
+<a
+  href={route(lang, 'blog')}
+  class="mt-12 inline-block text-sm text-accent hover:underline dark:text-accent-dark"
+>
+  ← {t('blog.backToBlog')}
+</a>

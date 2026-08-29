@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import TagPage from '~/components/pages/TagPage.astro';
+import { tagPath, useTranslations } from '~/i18n/utils';
+import { getPosts, getTags, type Post } from '~/lib/content';
+
+const lang = 'tr' as const;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPosts('tr');
+  const tags = await getTags('tr');
+  return tags.map(({ tag }) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((post) => post.data.tags.includes(tag)) },
+  }));
+};
+
+const { tag, posts } = Astro.props as { tag: string; posts: Post[] };
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`#${tag}`}
+  description={`${t('blog.taggedWith')}: ${tag}`}
+  lang={lang}
+  alternates={{ en: tagPath('en', tag), tr: tagPath('tr', tag) }}
+>
+  <TagPage lang={lang} tag={tag} posts={posts} />
+</BaseLayout>

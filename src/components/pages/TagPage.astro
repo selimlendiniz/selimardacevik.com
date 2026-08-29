@@ -1,0 +1,28 @@
+---
+import PostCard from '~/components/PostCard.astro';
+import { route, useTranslations, type Lang } from '~/i18n/utils';
+import type { Post } from '~/lib/content';
+
+interface Props {
+  lang: Lang;
+  tag: string;
+  posts: Post[];
+}
+
+const { lang, tag, posts } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<p class="text-sm text-ink-muted dark:text-ink-muted-dark">{t('blog.taggedWith')}</p>
+<h1 class="mt-1 text-3xl font-bold tracking-tight">#{tag}</h1>
+
+<div class="mt-8">
+  {posts.map((post) => <PostCard post={post} lang={lang} />)}
+</div>
+
+<a
+  href={route(lang, 'blog')}
+  class="mt-8 inline-block text-sm text-accent hover:underline dark:text-accent-dark"
+>
+  ← {t('blog.backToBlog')}
+</a>

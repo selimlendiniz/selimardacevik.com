@@ -1,0 +1,48 @@
+---
+import { useTranslations, type Lang } from '~/i18n/utils';
+import type { Project } from '~/lib/content';
+
+interface Props {
+  project: Project;
+  lang: Lang;
+}
+
+const { project, lang } = Astro.props;
+const t = useTranslations(lang);
+const { title, description, year, tech, url, repo } = project.data;
+---
+
+<article
+  class="rounded-lg border border-line p-5 transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+>
+  <div class="flex items-baseline gap-3">
+    <h3 class="font-semibold tracking-tight">{title}</h3>
+    <span class="ms-auto text-sm text-ink-muted dark:text-ink-muted-dark">{year}</span>
+  </div>
+  <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{description}</p>
+  {
+    tech.length > 0 && (
+      <ul class="mt-3 flex flex-wrap gap-2 text-xs text-ink-muted dark:text-ink-muted-dark">
+        {tech.map((item) => (
+          <li class="rounded bg-paper-raised px-2 py-1 dark:bg-paper-raised-dark">{item}</li>
+        ))}
+      </ul>
+    )
+  }
+  <div class="mt-4 flex gap-4 text-sm">
+    {
+      url && (
+        <a class="text-accent hover:underline dark:text-accent-dark" href={url} rel="noopener">
+          {t('projects.visit')}
+        </a>
+      )
+    }
+    {
+      repo && (
+        <a class="text-accent hover:underline dark:text-accent-dark" href={repo} rel="noopener">
+          {t('projects.source')}
+        </a>
+      )
+    }
+  </div>
+</article>

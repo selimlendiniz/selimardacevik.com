@@ -1,0 +1,80 @@
+---
+import PostCard from '~/components/PostCard.astro';
+import ProjectCard from '~/components/ProjectCard.astro';
+import { SITE } from '~/config';
+import { route, useTranslations, type Lang } from '~/i18n/utils';
+import { getPosts, getProjects } from '~/lib/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const posts = (await getPosts(lang)).slice(0, 3);
+const projects = (await getProjects(lang)).filter((project) => project.data.featured).slice(0, 3);
+---
+
+<section>
+  <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">{SITE.name}</h1>
+  <p class="mt-2 text-lg text-ink-muted dark:text-ink-muted-dark">{SITE.tagline[lang]}</p>
+  <p class="mt-6 max-w-prose leading-relaxed">{SITE.intro[lang]}</p>
+
+  <div class="mt-8 flex flex-wrap gap-3">
+    <a
+      href={route(lang, 'blog')}
+      class="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-strong"
+    >
+      {t('home.readBlog')}
+    </a>
+    <a
+      href={route(lang, 'projects')}
+      class="rounded-md border border-line px-4 py-2 text-sm font-medium transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+    >
+      {t('home.seeProjects')}
+    </a>
+  </div>
+</section>
+
+{
+  posts.length > 0 && (
+    <section class="mt-16">
+      <div class="flex items-baseline gap-4">
+        <h2 class="text-xl font-semibold tracking-tight">{t('home.latestPosts')}</h2>
+        <a
+          href={route(lang, 'blog')}
+          class="ms-auto text-sm text-accent hover:underline dark:text-accent-dark"
+        >
+          {t('home.allPosts')}
+        </a>
+      </div>
+      <div class="mt-2">
+        {posts.map((post) => (
+          <PostCard post={post} lang={lang} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+{
+  projects.length > 0 && (
+    <section class="mt-16">
+      <div class="flex items-baseline gap-4">
+        <h2 class="text-xl font-semibold tracking-tight">{t('home.featuredProjects')}</h2>
+        <a
+          href={route(lang, 'projects')}
+          class="ms-auto text-sm text-accent hover:underline dark:text-accent-dark"
+        >
+          {t('home.allProjects')}
+        </a>
+      </div>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {projects.map((project) => (
+          <ProjectCard project={project} lang={lang} />
+        ))}
+      </div>
+    </section>
+  )
+}

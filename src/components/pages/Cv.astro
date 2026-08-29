@@ -1,0 +1,107 @@
+---
+import { getEntry } from 'astro:content';
+import { SITE } from '~/config';
+import { useTranslations, type Lang } from '~/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const entry = await getEntry('cv', lang);
+const cv = entry?.data;
+---
+
+<div class="flex flex-wrap items-baseline gap-4">
+  <h1 class="text-3xl font-bold tracking-tight">{t('cv.title')}</h1>
+  {
+    SITE.cvPdf && (
+      <a
+        href={SITE.cvPdf}
+        download
+        class="ms-auto rounded-md border border-line px-3 py-1.5 text-sm transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+      >
+        {t('cv.download')}
+      </a>
+    )
+  }
+</div>
+
+{cv?.summary && <p class="mt-4 max-w-prose leading-relaxed">{cv.summary}</p>}
+
+{
+  cv && cv.experience.length > 0 && (
+    <section class="mt-12">
+      <h2 class="text-xl font-semibold tracking-tight">{t('cv.experience')}</h2>
+      <ol class="mt-4 space-y-8">
+        {cv.experience.map((job) => (
+          <li>
+            <div class="flex flex-wrap items-baseline gap-x-3">
+              <h3 class="font-medium">{job.role}</h3>
+              <span class="text-ink-muted dark:text-ink-muted-dark">{job.company}</span>
+              <span class="ms-auto text-sm text-ink-muted dark:text-ink-muted-dark">
+                {job.start} – {job.end ?? t('cv.present')}
+              </span>
+            </div>
+            {job.location && (
+              <p class="text-sm text-ink-muted dark:text-ink-muted-dark">{job.location}</p>
+            )}
+            {job.highlights.length > 0 && (
+              <ul class="mt-2 list-disc space-y-1 ps-5 text-ink-muted dark:text-ink-muted-dark">
+                {job.highlights.map((highlight) => (
+                  <li>{highlight}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+{
+  cv && cv.education.length > 0 && (
+    <section class="mt-12">
+      <h2 class="text-xl font-semibold tracking-tight">{t('cv.education')}</h2>
+      <ol class="mt-4 space-y-4">
+        {cv.education.map((item) => (
+          <li class="flex flex-wrap items-baseline gap-x-3">
+            <h3 class="font-medium">{item.degree}</h3>
+            <span class="text-ink-muted dark:text-ink-muted-dark">{item.school}</span>
+            <span class="ms-auto text-sm text-ink-muted dark:text-ink-muted-dark">
+              {item.start} – {item.end ?? t('cv.present')}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+{
+  cv && cv.skills.length > 0 && (
+    <section class="mt-12">
+      <h2 class="text-xl font-semibold tracking-tight">{t('cv.skills')}</h2>
+      <dl class="mt-4 space-y-3">
+        {cv.skills.map((group) => (
+          <div class="flex flex-wrap gap-x-3">
+            <dt class="font-medium">{group.group}</dt>
+            <dd class="text-ink-muted dark:text-ink-muted-dark">{group.items.join(', ')}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
+<section class="mt-12">
+  <h2 class="text-xl font-semibold tracking-tight">{t('contact.title')}</h2>
+  <p class="mt-2">
+    <a class="text-accent hover:underline dark:text-accent-dark" href={`mailto:${SITE.email}`}>
+      {SITE.email}
+    </a>
+  </p>
+</section>

@@ -1,0 +1,20 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getLangFromUrl, route, useTranslations } from '~/i18n/utils';
+
+// A 404 is served for unknown paths in both language trees, so read the
+// language off the requested URL instead of hardcoding it.
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={t('404.title')} description={t('404.description')} lang={lang}>
+  <h1 class="text-3xl font-bold tracking-tight">404 — {t('404.title')}</h1>
+  <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{t('404.description')}</p>
+  <a
+    href={route(lang, 'home')}
+    class="mt-6 inline-block text-accent hover:underline dark:text-accent-dark"
+  >
+    {t('404.home')}
+  </a>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import BlogPost from '~/components/pages/BlogPost.astro';
+import { routes } from '~/i18n/ui';
+import { postPath } from '~/i18n/utils';
+import { getPosts, translationsOf, type Post } from '~/lib/content';
+
+const lang = 'en' as const;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPosts('en');
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+};
+
+const { post } = Astro.props as { post: Post };
+const languages = await translationsOf(post.slug);
+const alternates = {
+  en: languages.includes('en') ? postPath('en', post.slug) : routes.en.blog,
+  tr: languages.includes('tr') ? postPath('tr', post.slug) : routes.tr.blog,
+};
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  lang={lang}
+  alternates={alternates}
+  type="article"
+  publishedTime={post.data.pubDate}
+>
+  <BlogPost post={post} lang={lang} />
+</BaseLayout>

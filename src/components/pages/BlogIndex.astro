@@ -1,0 +1,44 @@
+---
+import PostCard from '~/components/PostCard.astro';
+import { tagPath, useTranslations, type Lang } from '~/i18n/utils';
+import { getPosts, getTags } from '~/lib/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const posts = await getPosts(lang);
+const tags = await getTags(lang);
+---
+
+<h1 class="text-3xl font-bold tracking-tight">{t('blog.title')}</h1>
+<p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{t('blog.description')}</p>
+
+{
+  tags.length > 0 && (
+    <ul class="mt-6 flex flex-wrap gap-2 text-sm">
+      {tags.map(({ tag, count }) => (
+        <li>
+          <a
+            href={tagPath(lang, tag)}
+            class="rounded bg-paper-raised px-2 py-1 text-ink-muted transition hover:text-accent dark:bg-paper-raised-dark dark:text-ink-muted-dark dark:hover:text-accent-dark"
+          >
+            {tag} <span class="opacity-60">{count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<div class="mt-8">
+  {
+    posts.length === 0 ? (
+      <p class="text-ink-muted dark:text-ink-muted-dark">{t('blog.empty')}</p>
+    ) : (
+      posts.map((post) => <PostCard post={post} lang={lang} />)
+    )
+  }
+</div>

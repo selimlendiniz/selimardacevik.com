@@ -1,0 +1,17 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Home from '~/components/pages/Home.astro';
+import { SITE } from '~/config';
+import { routes } from '~/i18n/ui';
+
+const lang = 'en' as const;
+---
+
+<BaseLayout
+  title={SITE.name}
+  description={SITE.intro[lang]}
+  lang={lang}
+  alternates={{ en: routes.en.home, tr: routes.tr.home }}
+>
+  <Home lang={lang} />
+</BaseLayout>
