@@ -24,16 +24,21 @@ const current = Astro.url.pathname;
 const isActive = (href: string) => current === href || current.startsWith(href);
 ---
 
-<header class="border-b border-line dark:border-line-dark">
-  <div class="mx-auto flex max-w-3xl items-center gap-4 px-5 py-4">
+<header class="border-b border-line dark:border-line-dark" data-print-hide>
+  <!-- Narrow screens put the nav on its own row under the name and controls;
+       from sm up everything sits on one line. -->
+  <div class="mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-3 px-5 py-3 sm:py-4">
     <a
       href={route(lang, 'home')}
-      class="font-semibold tracking-tight hover:text-accent dark:hover:text-accent-dark"
+      class="order-1 font-semibold tracking-tight hover:text-accent dark:hover:text-accent-dark"
     >
       {SITE.name}
     </a>
 
-    <nav aria-label={t('nav.menu')} class="ms-auto flex items-center gap-4 text-sm">
+    <nav
+      aria-label={t('nav.menu')}
+      class="order-3 flex w-full items-center gap-5 text-sm sm:order-2 sm:ms-auto sm:w-auto sm:gap-4"
+    >
       {
         links.map((link) => (
           <a
@@ -52,7 +57,7 @@ const isActive = (href: string) => current === href || current.startsWith(href);
       }
     </nav>
 
-    <div class="flex items-center gap-2">
+    <div class="order-2 ms-auto flex items-center gap-2 sm:order-3 sm:ms-0">
       <a
         href={switchTo}
         hreflang={other}
