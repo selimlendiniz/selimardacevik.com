@@ -1,0 +1,24 @@
+{
+  "summary": "PLACEHOLDER — ne yaptığını ve ne aradığını anlatan kısa bir paragraf.",
+  "experience": [
+    {
+      "role": "PLACEHOLDER — pozisyon",
+      "company": "PLACEHOLDER — şirket",
+      "location": "PLACEHOLDER — şehir, ülke",
+      "start": "2024",
+      "highlights": ["PLACEHOLDER — neyi hayata geçirdin ve bunun sonucu ne oldu."]
+    }
+  ],
+  "education": [
+    {
+      "degree": "PLACEHOLDER — bölüm",
+      "school": "PLACEHOLDER — okul",
+      "start": "2020",
+      "end": "2024"
+    }
+  ],
+  "skills": [
+    { "group": "Diller", "items": ["PLACEHOLDER"] },
+    { "group": "Araçlar", "items": ["PLACEHOLDER"] }
+  ]
+}

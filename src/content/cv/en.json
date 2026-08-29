@@ -1,0 +1,24 @@
+{
+  "summary": "PLACEHOLDER — a short paragraph about what you do and what you are looking for.",
+  "experience": [
+    {
+      "role": "PLACEHOLDER — job title",
+      "company": "PLACEHOLDER — company",
+      "location": "PLACEHOLDER — city, country",
+      "start": "2024",
+      "highlights": ["PLACEHOLDER — what you shipped and what changed because of it."]
+    }
+  ],
+  "education": [
+    {
+      "degree": "PLACEHOLDER — degree",
+      "school": "PLACEHOLDER — school",
+      "start": "2020",
+      "end": "2024"
+    }
+  ],
+  "skills": [
+    { "group": "Languages", "items": ["PLACEHOLDER"] },
+    { "group": "Tools", "items": ["PLACEHOLDER"] }
+  ]
+}
