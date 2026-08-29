@@ -13,9 +13,11 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   publishedTime?: Date;
+  noindex?: boolean;
 }
 
-const { title, description, lang, alternates, image, type, publishedTime } = Astro.props;
+const { title, description, lang, alternates, image, type, publishedTime, noindex } =
+  Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -30,6 +32,7 @@ const t = useTranslations(lang);
       image={image}
       type={type}
       publishedTime={publishedTime}
+      noindex={noindex}
     />
   </head>
   <body class="flex min-h-screen flex-col font-sans">

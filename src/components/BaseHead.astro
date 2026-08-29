@@ -11,6 +11,8 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   publishedTime?: Date;
+  /** Keep the page out of search results (error pages, thin pages). */
+  noindex?: boolean;
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   image,
   type = 'website',
   publishedTime,
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
@@ -36,6 +39,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, follow" />}
 <meta name="author" content={SITE.name} />
 <link rel="canonical" href={canonical} />
 

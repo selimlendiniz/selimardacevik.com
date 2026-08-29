@@ -1,20 +1,40 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import { getLangFromUrl, route, useTranslations } from '~/i18n/utils';
+import { routes, ui } from '~/i18n/ui';
 
-// A 404 is served for unknown paths in both language trees, so read the
-// language off the requested URL instead of hardcoding it.
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+// A static build renders this page once and Vercel serves it for unknown paths
+// in both language trees, so the language cannot be read off the URL. Show
+// both languages instead of guessing, and mark each block with its own lang.
+const blocks = [
+  { lang: 'en' as const, home: routes.en.home, blog: routes.en.blog },
+  { lang: 'tr' as const, home: routes.tr.home, blog: routes.tr.blog },
+];
 ---
 
-<BaseLayout title={t('404.title')} description={t('404.description')} lang={lang}>
-  <h1 class="text-3xl font-bold tracking-tight">404 — {t('404.title')}</h1>
-  <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{t('404.description')}</p>
-  <a
-    href={route(lang, 'home')}
-    class="mt-6 inline-block text-accent hover:underline dark:text-accent-dark"
-  >
-    {t('404.home')}
-  </a>
+<BaseLayout
+  title={ui.en['404.title']}
+  description={ui.en['404.description']}
+  lang="en"
+  noindex
+>
+  <p class="text-sm font-medium tracking-widest text-ink-muted dark:text-ink-muted-dark">404</p>
+
+  <div class="mt-4 space-y-10">
+    {
+      blocks.map(({ lang, home, blog }) => (
+        <section lang={lang}>
+          <h2 class="text-2xl font-bold tracking-tight">{ui[lang]['404.title']}</h2>
+          <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{ui[lang]['404.description']}</p>
+          <p class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            <a class="text-accent hover:underline dark:text-accent-dark" href={home}>
+              {ui[lang]['404.home']}
+            </a>
+            <a class="text-accent hover:underline dark:text-accent-dark" href={blog}>
+              {ui[lang]['blog.title']}
+            </a>
+          </p>
+        </section>
+      ))
+    }
+  </div>
 </BaseLayout>
