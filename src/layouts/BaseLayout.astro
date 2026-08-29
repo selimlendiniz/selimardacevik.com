@@ -2,6 +2,7 @@
 import BaseHead from '~/components/BaseHead.astro';
 import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
+import JsonLd from '~/components/JsonLd.astro';
 import { useTranslations, type Lang } from '~/i18n/utils';
 import '~/styles/global.css';
 
@@ -14,9 +15,11 @@ interface Props {
   type?: 'website' | 'article';
   publishedTime?: Date;
   noindex?: boolean;
+  /** schema.org structured data for this page. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, lang, alternates, image, type, publishedTime, noindex } =
+const { title, description, lang, alternates, image, type, publishedTime, noindex, jsonLd } =
   Astro.props;
 const t = useTranslations(lang);
 ---
@@ -34,6 +37,7 @@ const t = useTranslations(lang);
       publishedTime={publishedTime}
       noindex={noindex}
     />
+    {jsonLd && <JsonLd schema={jsonLd} />}
   </head>
   <body class="flex min-h-screen flex-col font-sans">
     <a

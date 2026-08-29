@@ -75,3 +75,46 @@ html.dark .astro-code span {
   font-weight: var(--shiki-dark-font-weight) !important;
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+
+/* The CV page doubles as the printable CV: drop the site chrome, force light
+   ink on white, and let the content use the full page. */
+@media print {
+  html,
+  html.dark,
+  html.dark body,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  header,
+  footer,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  li,
+  section {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}

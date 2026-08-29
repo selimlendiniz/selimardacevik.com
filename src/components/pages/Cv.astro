@@ -16,18 +16,31 @@ const cv = entry?.data;
 
 <div class="flex flex-wrap items-baseline gap-4">
   <h1 class="text-3xl font-bold tracking-tight">{t('cv.title')}</h1>
-  {
-    SITE.cvPdf && (
-      <a
-        href={SITE.cvPdf}
-        download
-        class="ms-auto rounded-md border border-line px-3 py-1.5 text-sm transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
-      >
-        {t('cv.download')}
-      </a>
-    )
-  }
+  <div class="ms-auto flex gap-2" data-print-hide>
+    {
+      SITE.cvPdf && (
+        <a
+          href={SITE.cvPdf}
+          download
+          class="rounded-md border border-line px-3 py-1.5 text-sm transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+        >
+          {t('cv.download')}
+        </a>
+      )
+    }
+    <button
+      type="button"
+      id="cv-print"
+      class="rounded-md border border-line px-3 py-1.5 text-sm transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+    >
+      {t('cv.print')}
+    </button>
+  </div>
 </div>
+
+<script is:inline>
+  document.getElementById('cv-print')?.addEventListener('click', () => window.print());
+</script>
 
 {cv?.summary && <p class="mt-4 max-w-prose leading-relaxed">{cv.summary}</p>}
 

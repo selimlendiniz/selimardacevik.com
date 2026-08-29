@@ -3,9 +3,12 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import Cv from '~/components/pages/Cv.astro';
 import { routes } from '~/i18n/ui';
 import { useTranslations } from '~/i18n/utils';
+import { personSchema } from '~/lib/schema';
+import { SITE } from '~/config';
 
 const lang = 'en' as const;
 const t = useTranslations(lang);
+const site = Astro.site ?? SITE.url;
 ---
 
 <BaseLayout
@@ -13,6 +16,7 @@ const t = useTranslations(lang);
   description={t('cv.description')}
   lang={lang}
   alternates={{ en: routes.en.cv, tr: routes.tr.cv }}
+  jsonLd={personSchema(lang, site)}
 >
   <Cv lang={lang} />
 </BaseLayout>

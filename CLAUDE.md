@@ -76,6 +76,7 @@ pubDate: 2026-08-29        # required, ISO date
 updatedDate: 2026-09-02    # optional
 tags: ["astro", "typescript"]
 draft: false               # drafts are excluded from production builds
+ogImage: "/og-post.png"    # optional, overrides the default link preview
 ---
 ```
 
@@ -118,6 +119,14 @@ languages — do not fork a page component per locale.
   with the user's choice persisted and system preference as the default.
 - Images go through Astro's `<Image />` so they get sized and optimized.
 - Every page sets a title, description, canonical URL, and Open Graph tags.
+- Link previews fall back to `public/og-default.png`. Regenerate that card from
+  `scripts/og-source.html` — the instructions are in the file's comment.
+- Pages carry schema.org data built in `src/lib/schema.ts`: a single `Person`
+  node (home and CV), `WebSite` on the home page, `BlogPosting` on posts. Keep
+  the `@id` values stable so the nodes stay linked.
+- `/cv/` is the printable CV. Its print rules live at the bottom of
+  `global.css`; anything that should not print gets `data-print-hide`. Check
+  print output when changing that page.
 - Keep the dependency list small. Ask before adding a package; most things
   this site needs are already in Astro or Tailwind.
 - Accessibility is not optional: real landmark elements, visible focus
@@ -130,6 +139,7 @@ languages — do not fork a page component per locale.
   fetching in the default path.
 - `/rss.xml` (English) and `/tr/rss.xml` (Turkish) are generated from the
   blog collection.
+- `robots.txt` points at the sitemap index.
 - A `sitemap` covering both locales is generated on build.
 - Every page carries `hreflang` links for the languages it exists in, plus
   `x-default` pointing at the English version.
