@@ -1,11 +1,16 @@
 {
-  "summary": "PLACEHOLDER — ne yaptığını ve ne aradığını anlatan kısa bir paragraf.",
+  "summary": "Altyapı ile uygulama kodu arasında çalışan bir platform mühendisiyim. Ekibin ürünü sahaya çıkardığı yolu kuruyorum ve işletiyorum — CI hatları, container'lar, ortamlar — ama üstünde koşan ürün kodunda da rahatım. Deploy etmesi kolay, ne yaptığı görünen ve sonraki kişinin rahatça değiştirebileceği sistemleri önemsiyorum.",
   "experience": [
     {
-      "role": "PLACEHOLDER — pozisyon",
+      "role": "Platform Mühendisi",
       "company": "32bit Bilgisayar Hizmetleri",
       "start": "Haziran 2024",
-      "highlights": []
+      "highlights": [
+        "Ekibin ürünü sahaya çıkardığı CI/CD hatlarını kuruyor ve sürdürüyorum.",
+        "Servisleri container'a alıyor; geliştirme, test ve canlı ortamları birbirinden ayrışmayacak şekilde tutuyorum.",
+        "Platformun yanı sıra uygulama kodunda da çalışıyorum: API uçlarından önlerindeki arayüzlere kadar.",
+        "Log ve izleme kurarak arızaların kullanıcı bildirmeden önce görülmesini sağlıyorum."
+      ]
     }
   ],
   "education": [
@@ -17,7 +22,13 @@
     }
   ],
   "skills": [
-    { "group": "Diller", "items": ["PLACEHOLDER"] },
-    { "group": "Araçlar", "items": ["PLACEHOLDER"] }
+    { "group": "Diller", "items": ["TypeScript", "JavaScript", "Go", "Python", "SQL", "Bash"] },
+    { "group": "Frontend", "items": ["React", "Next.js", "Astro", "Tailwind CSS"] },
+    { "group": "Backend", "items": ["Node.js", "NestJS", "Express", "PostgreSQL", "Redis"] },
+    {
+      "group": "Platform",
+      "items": ["Docker", "Kubernetes", "Terraform", "GitHub Actions", "Nginx", "Linux"]
+    },
+    { "group": "İzleme", "items": ["Prometheus", "Grafana", "Loki"] }
   ]
 }

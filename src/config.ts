@@ -8,15 +8,13 @@
 export const SITE = {
   url: 'https://selimardacevik.com',
   name: 'Selim Arda Çevik',
-  /** PLACEHOLDER — one short line describing what you do. */
   tagline: {
-    en: 'Software developer',
-    tr: 'Yazılım geliştirici',
+    en: 'Platform engineer',
+    tr: 'Platform mühendisi',
   },
-  /** PLACEHOLDER — two or three sentences for the home page. */
   intro: {
-    en: 'I build software. This site collects what I work on and what I write about it.',
-    tr: 'Yazılım geliştiriyorum. Bu site üzerinde çalıştığım işleri ve yazdıklarımı topluyor.',
+    en: 'I work across infrastructure and application code: the pipelines, containers, and environments a team ships through, and the product code that runs on top of them. This site collects what I build and what I write about it.',
+    tr: 'Altyapı ile uygulama kodu arasında çalışıyorum: bir ekibin ürünü sahaya çıkardığı hatlar, container\'lar ve ortamlar; bir de üstünde koşan ürün kodu. Bu site geliştirdiğim işleri ve yazdıklarımı topluyor.',
   },
   email: 'sardacevik@gmail.com',
   social: {

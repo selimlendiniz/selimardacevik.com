@@ -1,11 +1,16 @@
 {
-  "summary": "PLACEHOLDER — a short paragraph about what you do and what you are looking for.",
+  "summary": "Platform engineer working across infrastructure and application code. I build and run the delivery path — CI pipelines, containers, environments — and I am equally at home in the product code that runs on top of it. I care about systems that are easy to deploy, easy to observe, and easy for the next person to change.",
   "experience": [
     {
-      "role": "PLACEHOLDER — job title",
+      "role": "Platform Engineer",
       "company": "32bit Bilgisayar Hizmetleri",
       "start": "June 2024",
-      "highlights": []
+      "highlights": [
+        "Build and maintain the CI/CD pipelines the team ships through.",
+        "Containerize services and keep development, staging, and production environments consistent.",
+        "Work on the application code as well as the platform, from API endpoints to the interfaces in front of them.",
+        "Set up logging and monitoring so failures are found before users report them."
+      ]
     }
   ],
   "education": [
@@ -17,7 +22,13 @@
     }
   ],
   "skills": [
-    { "group": "Languages", "items": ["PLACEHOLDER"] },
-    { "group": "Tools", "items": ["PLACEHOLDER"] }
+    { "group": "Languages", "items": ["TypeScript", "JavaScript", "Go", "Python", "SQL", "Bash"] },
+    { "group": "Frontend", "items": ["React", "Next.js", "Astro", "Tailwind CSS"] },
+    { "group": "Backend", "items": ["Node.js", "NestJS", "Express", "PostgreSQL", "Redis"] },
+    {
+      "group": "Platform",
+      "items": ["Docker", "Kubernetes", "Terraform", "GitHub Actions", "Nginx", "Linux"]
+    },
+    { "group": "Observability", "items": ["Prometheus", "Grafana", "Loki"] }
   ]
 }
