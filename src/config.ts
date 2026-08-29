@@ -16,10 +16,10 @@ export const SITE = {
     en: 'I work across infrastructure and application code: the pipelines, containers, and environments a team ships through, and the product code that runs on top of them. This site collects what I build and what I write about it.',
     tr: 'Altyapı ile uygulama kodu arasında çalışıyorum: bir ekibin ürünü sahaya çıkardığı hatlar, container\'lar ve ortamlar; bir de üstünde koşan ürün kodu. Bu site geliştirdiğim işleri ve yazdıklarımı topluyor.',
   },
-  email: 'sardacevik@gmail.com',
+  email: 'selimardacevik@proton.me',
   social: {
-    github: 'https://github.com/',
-    linkedin: 'https://www.linkedin.com/',
+    github: 'https://github.com/selimlendiniz',
+    linkedin: 'https://www.linkedin.com/in/selimardacevik/',
   },
   /** Path to the downloadable CV in public/, or null to hide the button. */
   cvPdf: null as string | null,
