@@ -165,7 +165,10 @@ languages — do not fork a page component per locale.
   `pnpm build && pnpm preview` to try search locally.
 - Blog lists are paginated at 10 posts per page; pages after the first are
   `noindex`.
-- A `sitemap` covering both locales is generated on build.
+- A `sitemap` covering both locales is generated on build. Pages that are
+  `noindex` — the search pages and blog list pages after the first — are kept
+  out of it by the `filter` in `astro.config.mjs`; a sitemap that lists
+  noindex URLs is reported as an error in Search Console.
 - Every page carries `hreflang` links for the languages it exists in, plus
   `x-default` pointing at the English version.
 

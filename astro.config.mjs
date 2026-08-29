@@ -24,6 +24,9 @@ export default defineConfig({
         defaultLocale: 'en',
         locales: { en: 'en', tr: 'tr' },
       },
+      // Keep pages that are marked noindex out of the sitemap: the search
+      // pages and every blog list page after the first.
+      filter: (page) => !/\/(search|ara)\/$/.test(page) && !/\/blog\/\d+\/$/.test(page),
     }),
   ],
   markdown: {
