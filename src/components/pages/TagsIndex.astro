@@ -1,0 +1,43 @@
+---
+import { route, tagPath, useTranslations, type Lang } from '~/i18n/utils';
+import { getTags } from '~/lib/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const tags = await getTags(lang);
+---
+
+<h1 class="text-3xl font-bold tracking-tight">{t('blog.tags')}</h1>
+
+{
+  tags.length === 0 ? (
+    <p class="mt-4 text-ink-muted dark:text-ink-muted-dark">{t('blog.empty')}</p>
+  ) : (
+    <ul class="mt-8 divide-y divide-line dark:divide-line-dark">
+      {tags.map(({ tag, count }) => (
+        <li class="flex items-baseline gap-4 py-3">
+          <a
+            href={tagPath(lang, tag)}
+            class="font-medium hover:text-accent dark:hover:text-accent-dark"
+          >
+            #{tag}
+          </a>
+          <span class="ms-auto text-sm text-ink-muted dark:text-ink-muted-dark">
+            {count} {t('blog.postCount')}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<a
+  href={route(lang, 'blog')}
+  class="mt-8 inline-block text-sm text-accent hover:underline dark:text-accent-dark"
+>
+  ← {t('blog.backToBlog')}
+</a>

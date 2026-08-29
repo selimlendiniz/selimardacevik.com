@@ -1,24 +1,37 @@
 ---
 import PostCard from '~/components/PostCard.astro';
-import { tagPath, useTranslations, type Lang } from '~/i18n/utils';
-import { getPosts, getTags } from '~/lib/content';
+import Pagination from '~/components/Pagination.astro';
+import { route, tagPath, useTranslations, type Lang } from '~/i18n/utils';
+import { getTags, type Post } from '~/lib/content';
 
 interface Props {
   lang: Lang;
+  posts: Post[];
+  current: number;
+  total: number;
+  prevUrl?: string;
+  nextUrl?: string;
 }
 
-const { lang } = Astro.props;
+const { lang, posts, current, total, prevUrl, nextUrl } = Astro.props;
 const t = useTranslations(lang);
-const posts = await getPosts(lang);
-const tags = await getTags(lang);
+const tags = (await getTags(lang)).slice(0, 8);
 ---
 
-<h1 class="text-3xl font-bold tracking-tight">{t('blog.title')}</h1>
+<div class="flex flex-wrap items-baseline gap-4">
+  <h1 class="text-3xl font-bold tracking-tight">{t('blog.title')}</h1>
+  <a
+    href={route(lang, 'search')}
+    class="ms-auto text-sm text-accent hover:underline dark:text-accent-dark"
+  >
+    {t('search.title')}
+  </a>
+</div>
 <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{t('blog.description')}</p>
 
 {
   tags.length > 0 && (
-    <ul class="mt-6 flex flex-wrap gap-2 text-sm">
+    <ul class="mt-6 flex flex-wrap items-center gap-2 text-sm">
       {tags.map(({ tag, count }) => (
         <li>
           <a
@@ -29,6 +42,14 @@ const tags = await getTags(lang);
           </a>
         </li>
       ))}
+      <li>
+        <a
+          href={route(lang, 'tags')}
+          class="text-accent hover:underline dark:text-accent-dark"
+        >
+          {t('blog.allTags')}
+        </a>
+      </li>
     </ul>
   )
 }
@@ -42,3 +63,5 @@ const tags = await getTags(lang);
     )
   }
 </div>
+
+<Pagination lang={lang} current={current} total={total} prevUrl={prevUrl} nextUrl={nextUrl} />

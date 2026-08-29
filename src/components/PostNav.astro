@@ -1,0 +1,48 @@
+---
+import { postPath, useTranslations, type Lang } from '~/i18n/utils';
+import type { Post } from '~/lib/content';
+
+interface Props {
+  lang: Lang;
+  /** The next post in reading order: newer than the current one. */
+  newer?: Post;
+  older?: Post;
+}
+
+const { lang, newer, older } = Astro.props;
+const t = useTranslations(lang);
+---
+
+{
+  (newer || older) && (
+    <nav
+      class="mt-12 grid gap-4 border-t border-line pt-6 sm:grid-cols-2 dark:border-line-dark"
+      data-print-hide
+    >
+      {older ? (
+        <a
+          href={postPath(lang, older.slug)}
+          class="group rounded-lg border border-line p-4 transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+        >
+          <span class="text-xs text-ink-muted dark:text-ink-muted-dark">
+            ← {t('blog.previousPost')}
+          </span>
+          <span class="mt-1 block font-medium">{older.data.title}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {newer && (
+        <a
+          href={postPath(lang, newer.slug)}
+          class="group rounded-lg border border-line p-4 text-end transition hover:border-accent dark:border-line-dark dark:hover:border-accent-dark"
+        >
+          <span class="text-xs text-ink-muted dark:text-ink-muted-dark">
+            {t('blog.nextPost')} →
+          </span>
+          <span class="mt-1 block font-medium">{newer.data.title}</span>
+        </a>
+      )}
+    </nav>
+  )
+}

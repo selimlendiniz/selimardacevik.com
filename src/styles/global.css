@@ -66,6 +66,43 @@ html.dark :focus-visible {
   outline-color: var(--color-accent-dark);
 }
 
+/* rehype-autolink-headings wraps each heading in a link to its own id. The
+   heading keeps its own colour, and the "#" marker is drawn with CSS so it
+   never leaks into the heading text Astro uses for the table of contents. */
+.heading-anchor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.heading-anchor::after {
+  content: '#';
+  margin-inline-start: 0.35rem;
+  color: var(--color-ink-muted);
+  font-weight: 400;
+}
+
+html.dark .heading-anchor::after {
+  color: var(--color-ink-muted-dark);
+}
+
+@media (hover: hover) {
+  .heading-anchor::after {
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  .heading-anchor:hover::after,
+  .heading-anchor:focus-visible::after {
+    opacity: 1;
+  }
+}
+
+@media print {
+  .heading-anchor::after {
+    display: none;
+  }
+}
+
 /* Shiki emits both themes; show the one that matches the active mode. */
 html.dark .astro-code,
 html.dark .astro-code span {

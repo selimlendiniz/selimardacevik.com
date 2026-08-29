@@ -12,10 +12,14 @@ const lang = 'tr' as const;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getPosts('tr');
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  // posts is newest first, so the previous index is the newer neighbour.
+  return posts.map((post, index) => ({
+    params: { slug: post.slug },
+    props: { post, newer: posts[index - 1], older: posts[index + 1] },
+  }));
 };
 
-const { post } = Astro.props as { post: Post };
+const { post, newer, older } = Astro.props as { post: Post; newer?: Post; older?: Post };
 const languages = await translationsOf(post.slug);
 const site = Astro.site ?? SITE.url;
 const alternates = {
@@ -29,10 +33,10 @@ const alternates = {
   description={post.data.description}
   lang={lang}
   alternates={alternates}
-  image={post.data.ogImage}
+  image={post.data.ogImage ?? post.data.cover?.src}
   type="article"
   publishedTime={post.data.pubDate}
   jsonLd={blogPostingSchema(post, lang, Astro.url, site, post.data.ogImage ?? '/og-default.png')}
 >
-  <BlogPost post={post} lang={lang} />
+  <BlogPost post={post} lang={lang} newer={newer} older={older} />
 </BaseLayout>

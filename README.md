@@ -12,7 +12,7 @@ Astro · MDX · Tailwind CSS · TypeScript · pnpm
 ```bash
 pnpm install
 pnpm dev        # http://localhost:4321
-pnpm build      # static output in dist/
+pnpm build      # static output in dist/, plus the Pagefind search index
 pnpm preview    # serve the production build
 pnpm check      # type-check
 ```
@@ -36,6 +36,12 @@ Post body in MDX.
 
 Drafts are visible in `pnpm dev` and excluded from production builds. A post
 does not need to exist in both languages.
+
+Optional frontmatter: `cover` / `coverAlt` for a cover image (kept in
+`src/content/blog/_media/`), and `ogImage` for a custom link preview.
+
+Search is built by Pagefind after the Astro build, so it only works in
+`pnpm preview` and in production — not on the dev server.
 
 Projects live in `src/content/projects/<lang>/`, CV data in
 `src/content/cv/<lang>.json`, and site-wide details (name, tagline, links) in

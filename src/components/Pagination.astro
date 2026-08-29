@@ -1,0 +1,39 @@
+---
+import { useTranslations, type Lang } from '~/i18n/utils';
+
+interface Props {
+  lang: Lang;
+  current: number;
+  total: number;
+  prevUrl?: string;
+  nextUrl?: string;
+}
+
+const { lang, current, total, prevUrl, nextUrl } = Astro.props;
+const t = useTranslations(lang);
+---
+
+{
+  total > 1 && (
+    <nav
+      class="mt-10 flex items-center gap-4 border-t border-line pt-6 text-sm dark:border-line-dark"
+      aria-label={t('blog.page')}
+    >
+      {prevUrl ? (
+        <a class="text-accent hover:underline dark:text-accent-dark" href={prevUrl}>
+          ← {t('blog.newerPosts')}
+        </a>
+      ) : (
+        <span />
+      )}
+      <span class="mx-auto text-ink-muted dark:text-ink-muted-dark">
+        {t('blog.page')} {current} / {total}
+      </span>
+      {nextUrl && (
+        <a class="text-accent hover:underline dark:text-accent-dark" href={nextUrl}>
+          {t('blog.olderPosts')} →
+        </a>
+      )}
+    </nav>
+  )
+}

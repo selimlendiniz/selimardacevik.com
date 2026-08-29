@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import FormattedDate from './FormattedDate.astro';
 import { postPath, type Lang } from '~/i18n/utils';
 import type { Post } from '~/lib/content';
@@ -12,12 +13,30 @@ const { post, lang } = Astro.props;
 const href = postPath(lang, post.slug);
 ---
 
-<article class="border-b border-line py-6 last:border-b-0 dark:border-line-dark">
-  <h3 class="text-lg font-semibold tracking-tight">
-    <a href={href} class="hover:text-accent dark:hover:text-accent-dark">{post.data.title}</a>
-  </h3>
-  <p class="mt-1 text-sm text-ink-muted dark:text-ink-muted-dark">
-    <FormattedDate date={post.data.pubDate} lang={lang} />
-  </p>
-  <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{post.data.description}</p>
+<article
+  class="flex gap-5 border-b border-line py-6 last:border-b-0 dark:border-line-dark"
+>
+  {
+    post.data.cover && (
+      <a href={href} class="hidden shrink-0 sm:block" tabindex="-1" aria-hidden="true">
+        <Image
+          src={post.data.cover}
+          alt=""
+          width={160}
+          height={100}
+          class="h-[100px] w-[160px] rounded-md border border-line object-cover dark:border-line-dark"
+          loading="lazy"
+        />
+      </a>
+    )
+  }
+  <div>
+    <h3 class="text-lg font-semibold tracking-tight">
+      <a href={href} class="hover:text-accent dark:hover:text-accent-dark">{post.data.title}</a>
+    </h3>
+    <p class="mt-1 text-sm text-ink-muted dark:text-ink-muted-dark">
+      <FormattedDate date={post.data.pubDate} lang={lang} />
+    </p>
+    <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{post.data.description}</p>
+  </div>
 </article>

@@ -1,0 +1,80 @@
+---
+import { useTranslations, type Lang } from '~/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Pagefind builds its index from dist/ after the Astro build, so these assets
+// exist in `pnpm preview` and in production but not on the dev server.
+const translations = {
+  placeholder: t('search.placeholder'),
+  zero_results: t('search.noResults'),
+  clear_search: t('nav.menu'),
+};
+---
+
+<div data-pagefind-ignore>
+  <h1 class="text-3xl font-bold tracking-tight">{t('search.title')}</h1>
+  <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">{t('search.description')}</p>
+
+  <div id="search" class="mt-8"></div>
+
+  <p
+    id="search-unavailable"
+    hidden
+    class="mt-8 rounded-lg border border-line p-4 text-sm text-ink-muted dark:border-line-dark dark:text-ink-muted-dark"
+  >
+    {t('search.unavailable')}
+  </p>
+</div>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+
+<script is:inline define:vars={{ translations }}>
+  const mount = () => {
+    if (typeof window.PagefindUI === 'undefined') {
+      document.getElementById('search-unavailable')?.removeAttribute('hidden');
+      return;
+    }
+    new window.PagefindUI({
+      element: '#search',
+      showImages: false,
+      showSubResults: true,
+      translations,
+    });
+  };
+
+  const script = document.createElement('script');
+  script.src = '/pagefind/pagefind-ui.js';
+  script.onload = mount;
+  script.onerror = () => {
+    document.getElementById('search-unavailable')?.removeAttribute('hidden');
+  };
+  document.head.append(script);
+</script>
+
+<style is:global>
+  /* Match Pagefind's UI to the site's tokens instead of its default blue. */
+  :root {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--color-ink);
+    --pagefind-ui-text: var(--color-ink);
+    --pagefind-ui-background: var(--color-paper);
+    --pagefind-ui-border: var(--color-line);
+    --pagefind-ui-tag: var(--color-paper-raised);
+    --pagefind-ui-border-radius: 0.5rem;
+    --pagefind-ui-font: var(--font-sans);
+  }
+
+  html.dark {
+    --pagefind-ui-primary: var(--color-ink-dark);
+    --pagefind-ui-text: var(--color-ink-dark);
+    --pagefind-ui-background: var(--color-paper-dark);
+    --pagefind-ui-border: var(--color-line-dark);
+    --pagefind-ui-tag: var(--color-paper-raised-dark);
+  }
+</style>

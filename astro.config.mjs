@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,6 +27,16 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        // 'wrap' keeps the heading text free of an extra "#" text node, which
+        // would otherwise show up in the table of contents Astro derives from
+        // the headings. The visible marker is drawn in CSS instead.
+        { behavior: 'wrap', properties: { class: 'heading-anchor' } },
+      ],
+    ],
     shikiConfig: {
       themes: { light: 'github-light', dark: 'github-dark' },
       wrap: true,

@@ -19,7 +19,8 @@ scan, and honest — this page is handed out during job interviews.
 ```bash
 pnpm install       # install dependencies
 pnpm dev           # local dev server (http://localhost:4321)
-pnpm build         # production build into dist/
+pnpm build         # production build into dist/, then the Pagefind index
+pnpm build:astro   # the Astro build alone, without Pagefind
 pnpm preview       # serve the production build locally
 pnpm check         # astro check: type-check .astro/.ts files
 ```
@@ -36,8 +37,11 @@ Turkish lives under `/tr`.
 | Page      | English              | Turkish                  |
 | --------- | -------------------- | ------------------------ |
 | Home      | `/`                  | `/tr/`                   |
-| Blog list | `/blog/`             | `/tr/blog/`              |
+| Blog list | `/blog/`, `/blog/2/` | `/tr/blog/`, `/tr/blog/2/` |
 | Post      | `/blog/<slug>/`      | `/tr/blog/<slug>/`       |
+| Tag       | `/blog/tags/<tag>/`  | `/tr/blog/tags/<tag>/`   |
+| Tag index | `/blog/tags/`        | `/tr/blog/tags/`         |
+| Search    | `/search/`           | `/tr/ara/`               |
 | Projects  | `/projects/`         | `/tr/projeler/`          |
 | CV        | `/cv/`               | `/tr/cv/`                |
 
@@ -76,9 +80,16 @@ pubDate: 2026-08-29        # required, ISO date
 updatedDate: 2026-09-02    # optional
 tags: ["astro", "typescript"]
 draft: false               # drafts are excluded from production builds
+cover: "../_media/post.png"  # optional, optimized by astro:assets
+coverAlt: "What the cover shows"
 ogImage: "/og-post.png"    # optional, overrides the default link preview
 ---
 ```
+
+Cover images live in `src/content/blog/_media/` and are referenced by a path
+relative to the post. They are resolved by `astro:assets`, so they get resized
+and served as WebP; a cover also becomes the post's link preview image unless
+`ogImage` overrides it.
 
 Never loosen or bypass the schema to make a post build. Fix the frontmatter.
 
@@ -131,6 +142,10 @@ languages — do not fork a page component per locale.
   this site needs are already in Astro or Tailwind.
 - Accessibility is not optional: real landmark elements, visible focus
   states, alt text on meaningful images, contrast that passes WCAG AA.
+- Headings in posts are wrapped in a link to their own id by
+  `rehype-autolink-headings`. The `#` marker is drawn in CSS on purpose: an
+  extra text node would end up in the table of contents Astro derives from the
+  headings.
 
 ## Build output expectations
 
@@ -140,6 +155,16 @@ languages — do not fork a page component per locale.
 - `/rss.xml` (English) and `/tr/rss.xml` (Turkish) are generated from the
   blog collection.
 - `robots.txt` points at the sitemap index.
+- Feeds carry the full post body, rendered from Markdown by `markdown-it` in
+  `src/lib/rss.ts` rather than through Astro. A post that leans on MDX
+  components will show their plain output in the feed.
+- Search is Pagefind, indexed from `dist/` after the Astro build. Only elements
+  marked `data-pagefind-body` are indexed — that is the post `<article>` — and
+  Pagefind keeps a separate index per language, so a search on `/tr/ara/`
+  returns Turkish posts only. The index does not exist on the dev server; use
+  `pnpm build && pnpm preview` to try search locally.
+- Blog lists are paginated at 10 posts per page; pages after the first are
+  `noindex`.
 - A `sitemap` covering both locales is generated on build.
 - Every page carries `hreflang` links for the languages it exists in, plus
   `x-default` pointing at the English version.
