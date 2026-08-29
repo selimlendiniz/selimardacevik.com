@@ -10,6 +10,11 @@
         "Containerize services and keep development, staging, and production environments consistent.",
         "Work on the application code as well as the platform, from API endpoints to the interfaces in front of them.",
         "Set up logging and monitoring so failures are found before users report them."
+      ],
+      "projects": [
+        "Garanti Bankası X-Change",
+        "Odea-Fx-Engine",
+        "Hayat-Finans-Fx-Engine"
       ]
     }
   ],

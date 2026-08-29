@@ -10,6 +10,11 @@
         "Servisleri container'a alıyor; geliştirme, test ve canlı ortamları birbirinden ayrışmayacak şekilde tutuyorum.",
         "Platformun yanı sıra uygulama kodunda da çalışıyorum: API uçlarından önlerindeki arayüzlere kadar.",
         "Log ve izleme kurarak arızaların kullanıcı bildirmeden önce görülmesini sağlıyorum."
+      ],
+      "projects": [
+        "Garanti Bankası X-Change",
+        "Odea-Fx-Engine",
+        "Hayat-Finans-Fx-Engine"
       ]
     }
   ],

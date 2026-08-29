@@ -61,6 +61,12 @@ const cv = entry?.data;
             {job.location && (
               <p class="text-sm text-ink-muted dark:text-ink-muted-dark">{job.location}</p>
             )}
+            {job.projects.length > 0 && (
+              <p class="mt-2 text-ink-muted dark:text-ink-muted-dark">
+                <span class="font-medium text-ink dark:text-ink-dark">{t('cv.projects')}:</span>{' '}
+                {job.projects.join(' · ')}
+              </p>
+            )}
             {job.highlights.length > 0 && (
               <ul class="mt-2 list-disc space-y-1 ps-5 text-ink-muted dark:text-ink-muted-dark">
                 {job.highlights.map((highlight) => (

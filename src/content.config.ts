@@ -47,6 +47,8 @@ const cv = defineCollection({
           start: z.string(),
           end: z.string().optional(),
           highlights: z.array(z.string()).default([]),
+          /** Named projects worked on in this role. */
+          projects: z.array(z.string()).default([]),
         }),
       )
       .default([]),
