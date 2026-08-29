@@ -1,6 +1,6 @@
 ---
 title: 'Merhaba dünya'
-description: 'Bu site neden var ve buraya ne koyacağım.'
+description: 'Bu blogun ilk yazısı: kimim, burada ne yazacağım ve site nasıl kurulu.'
 pubDate: 2026-08-29
 tags: ['meta']
 draft: false
@@ -8,25 +8,52 @@ cover: '../_media/hello-world.png'
 coverAlt: 'Koyu bir kart üzerinde site adı'
 ---
 
-Sitedeki ilk yazı. Asıl amacı hattın çalıştığını göstermek: Markdown girer,
-sayfa çıkar, RSS kaydı oluşur ve İngilizce çevirisi aynı slug ile yanında durur.
+Bu, blogun ilk yazısı. Uzun bir açılış konuşması yapmayacağım; burada ne
+bulacağını anlatıp yoluma devam edeyim.
 
-## Burada ne olacak
+Platform mühendisiyim. İşimin bir yarısı ekibin ürünü sahaya çıkardığı yol —
+CI hatları, container'lar, ortamlar — diğer yarısı da o yolun üstünde koşan
+uygulama kodu. Finans tarafında, işlem hacminin ve hataların gerçekten
+önemsendiği sistemlerle çalışıyorum.
 
-Geliştirdiğim işlere dair notlar, olması gerekenden uzun süren problemler ve
-tavsiye etmeye değer araçlar. Yazılar MDX ile yazılıyor ve repo içinde duruyor;
-yani her değişiklik bir commit.
+## Burada ne yazacağım
 
-```ts
-const selamla = (isim: string): string => `Merhaba, ${isim}`;
-console.log(selamla('dünya'));
+Günlük tutmayacağım. Yazmaya değer bulduğum şey şu: bir problemi çözmek
+gereğinden uzun sürdüyse, sebebi genelde hiçbir yerde yazmayan küçük bir
+detaydır. Onları buraya not alacağım.
+
+Muhtemel konular:
+
+- Kubernetes ve container'larla ilgili, belgelerde tek satır geçen ama üç saatimi
+  alan davranışlar
+- Jenkins ve Argo CD ile deploy hattı kurarken verdiğim kararlar ve sonradan
+  pişman olduklarım
+- Spring Boot tarafında tekrar tekrar karşılaştığım desenler
+- Fedora'da geliştirme ortamı: ne çalışıyor, ne çalışmıyor
+
+Her yazının sonunda "şunu şöyle yaptım, sen de yapabilirsin" gibi bir şey
+olmayabilir. Bazen sadece "bu böyleymiş" demek de yeterli.
+
+## Site hakkında
+
+Site statik: Astro ile üretiliyor, yazılar repo içinde MDX dosyaları olarak
+duruyor. Yani bir yazı yayınlamak bir commit atmak demek — düzeltmeler de
+sürüm geçmişinde kalıyor.
+
+İki dilli. İngilizce sürüm kökte, Türkçe sürüm `/tr` altında; aynı yazının iki
+dili aynı dosya adıyla eşleşiyor. Bir yazının diğer dilde karşılığı yoksa dil
+değiştirici seni o dilin blog listesine götürür, kırık bağlantıya değil.
+
+Her başlık kendi bağlantısını taşıyor, uzun yazılarda gövdenin üstünde
+içindekiler çıkıyor, arama sayfası da iki dildeki tüm yazıları kapsıyor.
+Tamamını RSS ile de okuyabilirsin:
+
+```text
+https://selimardacevik.com/tr/rss.xml
 ```
 
-Bir yazının diğer dilde karşılığı yoksa dil değiştirici seni o dilin blog
-listesine götürür, kırık bağlantıya değil.
+## Bundan sonrası
 
-## Bir şey bulmak
-
-Her başlık bir id ve `#` çapası alıyor; yani bir yazının her bölümünün kendi
-bağlantısı var. Uzun yazılarda gövdenin üstünde içindekiler çıkıyor, arama
-sayfası da iki dildeki tüm yazıları kapsıyor.
+İlk teknik yazı yakında. O zamana kadar [projeler](/tr/projeler/) ve
+[özgeçmiş](/tr/cv/) sayfalarına bakabilir, bir şey sormak istersen
+e-posta atabilirsin.

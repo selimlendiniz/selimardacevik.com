@@ -1,6 +1,6 @@
 ---
 title: 'Hello world'
-description: 'Why this site exists and what I plan to put here.'
+description: 'The first post on this blog: who I am, what I will write here, and how the site is built.'
 pubDate: 2026-08-29
 tags: ['meta']
 draft: false
@@ -8,26 +8,51 @@ cover: '../_media/hello-world.png'
 coverAlt: 'The site name on a dark card'
 ---
 
-This is the first post on the site. It exists mostly to prove the pipeline
-works: Markdown in, a page out, an RSS entry, and a Turkish translation living
-next to it under the same slug.
+This is the first post on the blog. Rather than open with a long introduction,
+here is what you will find here.
 
-## What goes here
+I am a platform engineer. Half the job is the path a team ships through — CI
+pipelines, containers, environments — and the other half is the application
+code that runs on it. I work in finance, on systems where throughput and
+failures are taken seriously.
 
-Notes on things I build, problems that took longer than they should have, and
-tools worth recommending. Posts are written in MDX and live in the repository,
-so every change to a post is a commit.
+## What I will write about
 
-```ts
-const greet = (name: string): string => `Hello, ${name}`;
-console.log(greet('world'));
+This is not a journal. What I find worth writing down is this: when a problem
+takes longer than it should have, the cause is usually a small detail that was
+not written down anywhere. Those go here.
+
+Likely subjects:
+
+- Kubernetes and container behaviour that the docs cover in one line and that
+  cost me three hours
+- Decisions made while building a delivery path with Jenkins and Argo CD, and
+  the ones I later regretted
+- Patterns I keep running into on the Spring Boot side
+- Development on Fedora: what works and what does not
+
+Not every post will end with "here is how you should do it". Sometimes "so
+that is how it behaves" is the whole finding.
+
+## About the site
+
+The site is static, built with Astro, and posts live in the repository as MDX
+files. Publishing is a commit, which means corrections stay in the history too.
+
+It is bilingual: English at the root, Turkish under `/tr`, with both versions
+of a post sharing one filename. When a post has no translation, the language
+switcher takes you to that language's blog index rather than a dead link.
+
+Every heading carries its own link, longer posts get a table of contents above
+the body, and the search page covers posts in both languages. You can also read
+everything over RSS:
+
+```text
+https://selimardacevik.com/rss.xml
 ```
 
-If a post has no translation in the other language, the language switcher takes
-you to that language's blog index instead of a dead link.
+## What's next
 
-## Finding things
-
-Every heading gets an id and a `#` anchor, so any section of a post has its own
-link. Longer posts show a table of contents above the body, and the search page
-covers every post in both languages.
+The first technical post is coming soon. Until then, have a look at
+[projects](/projects/) and the [CV](/cv/), and send an email if you want to ask
+about something.
