@@ -3,18 +3,17 @@
   "experience": [
     {
       "role": "PLACEHOLDER — job title",
-      "company": "PLACEHOLDER — company",
-      "location": "PLACEHOLDER — city, country",
-      "start": "2024",
-      "highlights": ["PLACEHOLDER — what you shipped and what changed because of it."]
+      "company": "32bit Bilgisayar Hizmetleri",
+      "start": "June 2024",
+      "highlights": []
     }
   ],
   "education": [
     {
-      "degree": "PLACEHOLDER — degree",
-      "school": "PLACEHOLDER — school",
-      "start": "2020",
-      "end": "2024"
+      "degree": "BSc, Computer Engineering",
+      "school": "Sakarya University",
+      "start": "2021",
+      "end": "2025"
     }
   ],
   "skills": [

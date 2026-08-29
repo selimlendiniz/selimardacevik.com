@@ -3,18 +3,17 @@
   "experience": [
     {
       "role": "PLACEHOLDER — pozisyon",
-      "company": "PLACEHOLDER — şirket",
-      "location": "PLACEHOLDER — şehir, ülke",
-      "start": "2024",
-      "highlights": ["PLACEHOLDER — neyi hayata geçirdin ve bunun sonucu ne oldu."]
+      "company": "32bit Bilgisayar Hizmetleri",
+      "start": "Haziran 2024",
+      "highlights": []
     }
   ],
   "education": [
     {
-      "degree": "PLACEHOLDER — bölüm",
-      "school": "PLACEHOLDER — okul",
-      "start": "2020",
-      "end": "2024"
+      "degree": "Bilgisayar Mühendisliği, Lisans",
+      "school": "Sakarya Üniversitesi",
+      "start": "2021",
+      "end": "2025"
     }
   ],
   "skills": [
