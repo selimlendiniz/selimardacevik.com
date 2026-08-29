@@ -6,7 +6,7 @@
  * before the site goes live.
  */
 export const SITE = {
-  url: 'https://selimardacevik.com',
+  url: 'https://www.selimardacevik.com',
   name: 'Selim Arda Çevik',
   tagline: {
     en: 'Platform engineer',

@@ -171,7 +171,11 @@ languages — do not fork a page component per locale.
 
 ## Deployment
 
-Vercel builds from the default branch and deploys to `selimardacevik.com`.
+Vercel builds from the default branch and serves the site at
+`www.selimardacevik.com`; the apex redirects there. Absolute URLs — canonical
+links, Open Graph, RSS, sitemap — come from `site` in `astro.config.mjs` and
+must name the host that actually serves, or previews and canonicals point
+through a redirect.
 Pull requests get preview deployments. Do not commit secrets — this is a
 static site and should need no runtime environment variables; if one becomes
 necessary, it goes in Vercel's project settings, never in the repo.

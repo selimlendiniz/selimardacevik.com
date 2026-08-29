@@ -8,7 +8,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://selimardacevik.com',
+  site: 'https://www.selimardacevik.com',
   trailingSlash: 'always',
   i18n: {
     locales: ['en', 'tr'],
