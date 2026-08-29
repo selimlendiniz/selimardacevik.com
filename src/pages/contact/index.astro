@@ -1,0 +1,22 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Contact from '~/components/pages/Contact.astro';
+import { SITE } from '~/config';
+import { routes } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+import { personSchema } from '~/lib/schema';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const site = Astro.site ?? SITE.url;
+---
+
+<BaseLayout
+  title={t('contact.title')}
+  description={t('contact.description')}
+  lang={lang}
+  alternates={{ en: routes.en.contact, tr: routes.tr.contact }}
+  jsonLd={personSchema(lang, site)}
+>
+  <Contact lang={lang} />
+</BaseLayout>
