@@ -1,0 +1,137 @@
+<!doctype html>
+<!--
+  Source for src/content/blog/_media/nvme-timeout-intel-vmd.png
+  (cover + link preview for the NVMe / Intel VMD post).
+
+  Language-neutral on purpose: one file backs both the EN and the TR post.
+
+  To regenerate:
+    1. cp scripts/cover-nvme-timeout-intel-vmd.html /tmp/cover.html
+    2. cp node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2 \
+         /tmp/__og-inter.woff2
+    3. google-chrome --headless --disable-gpu --allow-file-access-from-files \
+         --hide-scrollbars --force-device-scale-factor=1 \
+         --window-size=1200,630 --screenshot=/tmp/cover.png /tmp/cover.html
+    4. mv /tmp/cover.png src/content/blog/_media/nvme-timeout-intel-vmd.png
+
+  The mono face falls back to whatever monospace the rendering machine has;
+  the layout does not depend on it being JetBrains Mono.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cover source — NVMe / Intel VMD</title>
+    <style>
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-weight: 100 900;
+        src: url('./__og-inter.woff2') format('woff2-variations');
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1200px; height: 630px; overflow: hidden; }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 76px 88px;
+        background: #12161f;
+        background-image: radial-gradient(circle at 88% 8%, rgba(74, 128, 240, 0.35), transparent 55%);
+        color: #eef1f6;
+        font-family: 'Inter Variable', system-ui, sans-serif;
+      }
+      .rule { width: 96px; height: 6px; border-radius: 3px; background: #4a80f0; }
+
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .log {
+        margin-top: 40px;
+        font-family: 'JetBrainsMono Nerd Font', ui-monospace, 'JetBrains Mono', monospace;
+        font-size: 27px;
+        line-height: 1.5;
+        color: #c3cbd9;
+        white-space: nowrap;
+      }
+      .log .dim { color: #6f7a8d; }
+      .log .hit { color: #8fb4ff; font-weight: 700; }
+
+      .verdict {
+        margin-top: 40px;
+        display: flex;
+        align-items: baseline;
+        gap: 26px;
+      }
+      .verdict .label {
+        font-size: 30px;
+        color: #8b95a7;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .verdict .before {
+        font-size: 64px;
+        font-weight: 700;
+        color: #6f7a8d;
+        text-decoration: line-through;
+        text-decoration-thickness: 4px;
+      }
+      .verdict .arrow { font-size: 52px; color: #6f7a8d; }
+      .verdict .after {
+        font-size: 84px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: #eef1f6;
+      }
+
+      .evidence {
+        margin-top: 38px;
+        display: flex;
+        align-items: baseline;
+        gap: 20px;
+        font-family: 'JetBrainsMono Nerd Font', ui-monospace, 'JetBrains Mono', monospace;
+        font-size: 27px;
+        color: #6f7a8d;
+      }
+      .evidence .path { color: #c3cbd9; }
+      .evidence .zero { color: #eef1f6; font-weight: 700; }
+
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 28px;
+        color: #8b95a7;
+      }
+      footer span.domain { color: #eef1f6; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="rule"></div>
+      <p class="log">
+        <span class="dim">nvme nvme0:</span> I/O tag 77 QID 1 timeout,
+        <span class="hit">completion polled</span>
+      </p>
+      <div class="verdict">
+        <span class="label">boot</span>
+        <span class="before">53.0 s</span>
+        <span class="arrow">→</span>
+        <span class="after">18.1 s</span>
+      </div>
+      <div class="evidence">
+        <span class="path">/proc/interrupts</span>
+        <span>nvme0q0</span>
+        <span>·</span>
+        <span class="zero">0</span>
+      </div>
+    </main>
+    <footer>
+      <span class="domain">selimardacevik.com</span>
+      <span>NVMe · Intel VMD · Fedora 44</span>
+    </footer>
+  </body>
+</html>
