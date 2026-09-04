@@ -1,0 +1,308 @@
+---
+title: "Kaybolan interrupt'ın izini sürmek: NVMe, Intel VMD ve 30 saniye"
+description: "Boot 53 saniye, Chrome ilk tıklamada donuyor. İki ayrı şikâyet gibi görünen şeyin tek bir sebebi vardı: diskin completion interrupt'ı kernel'e hiç ulaşmıyordu."
+pubDate: 2026-09-04
+tags: ['linux', 'fedora', 'hardware', 'debugging']
+draft: false
+cover: '../_media/nvme-timeout-intel-vmd.png'
+coverAlt: "Koyu bir kart: 'nvme nvme0: I/O tag 77 QID 1 timeout, completion polled' kernel satırı, nvme0q0 için sıfır interrupt sayacı ve 53,0 saniyeden 18,1 saniyeye inen boot süresi"
+---
+
+Yeni dizüstünde iki şikâyetim vardı ve ikisini de ayrı problem sanıyordum.
+
+Birincisi: boot 53 saniye sürüyordu. NVMe SSD'li, 16 çekirdekli, 32 GB
+RAM'li bir makine için saçma bir rakam. İkincisi: Chrome'un günün ilk açılışı
+sonsuza kadar sürüyordu. Simgeye tıklıyorsun, hiçbir şey olmuyor. Yeniden
+tıklıyorsun, yine hiçbir şey. Sonra bir anda iki pencere birden açılıyor.
+
+Tek bir sebebi vardı ve o sebep diskin arızalı olması değildi.
+
+## Kernel zaten söylüyordu
+
+```text
+nvme nvme0: I/O tag 77 (104d) QID 1 timeout, completion polled
+```
+
+Bu satırın okunuşu şu: kernel diske bir komut gönderdi. Disk komutu
+tamamladı. Ama completion interrupt kernel'e **hiç ulaşmadı**. Kernel
+30 saniyelik timeout'u (`nvme_core.io_timeout`) sonuna kadar bekledi,
+sonra pes edip queue'yu elle yokladı — `completion polled` — ve
+"aslında çoktan bitmiş" dedi.
+
+Veri kaybı yok, disk sağlıklı. Kaybolan şey sadece bir interrupt. Bedeli 30
+saniye, ve o 30 saniye boyunca diske dokunan **her şey** donuyor.
+
+## Kanıt 1: boot'un 31 saniyesi tek bir takılma
+
+`systemd-analyze` suçluyu neredeyse tek başına gösterdi:
+
+```text
+$ systemd-analyze
+Startup finished in 7.093s (firmware) + 2.384s (loader) + 1.568s (kernel)
+                  + 3.244s (initrd) + 38.753s (userspace) = 53.044s
+
+$ systemd-analyze blame | grep -v '\.device$' | head -3
+30.836s initrd-switch-root.service
+22.381s fwupd.service
+ 6.370s NetworkManager-wait-online.service
+```
+
+38,7 saniyelik userspace'in 30,8'i tek bir birimde. Ama asıl kanıt journal'da,
+ve ilginç biçimde **bir şeyin yokluğu** olarak duruyordu: 4,74 saniye ile
+35,66 saniye arasında tek bir satır bile yazılmamıştı. 31 saniyelik tam
+sessizlik. Sessizliği bitiren satır da zaten timeout'un kendisiydi:
+
+```text
+[    4.741257] systemd[1]: Closed systemd-udevd-control.socket
+[   35.663220] kernel: nvme nvme0: I/O tag 77 QID 1 timeout, completion polled
+```
+
+Aradaki fark 30,92 saniye. `nvme_core.io_timeout` 30 saniye. Boot'un kayıp
+süresi, tek bir timeout'un süresine **birebir** eşitti.
+
+Bu arada yan tarafta duran `i915 GSC proxy component didn't bind within the
+expected timeout` hatası da beni bir süre oyaladı. O bir sonuçtu, ayrı bir
+sorun değil: `mei_gsc_proxy`, disk çözülür çözülmez 36,24'te bağlandı.
+
+## Kanıt 2: Chrome donması da aynı takılma
+
+Aynı deseni Chrome şikâyetinde de aradım ve buldum:
+
+```text
+[  340.004125] kernel: nvme0: I/O tag 735 QID 1 timeout, completion polled
+[  340.167394] chrome: ERROR:process_singleton_posix.cc:347]
+               Failed to create .../SingletonLock: File exists (17)
+[  341.149448] chrome: Opening in existing browser session.
+```
+
+Chrome yaklaşık 310. saniyede başlatılmış, profilini okurken takılmıştı.
+Açılmayınca ikinci kez tıklamışım — `SingletonLock: File exists` satırı tam
+olarak bunun izi. İkisi de 340,00'da, yani timeout'un çözüldüğü saniyede
+canlandı.
+
+Chrome'un kendisi yavaş değildi. Aynı profille (394 MB, 16 eklenti), page
+cache sıcakken ölçüm 0,28 saniye veriyordu. Aradaki fark tamamen diskti.
+
+## Kanıt 3: her boot'ta oluyordu
+
+Tek seferlik bir tuhaflık mı diye önceki boot'lara baktım:
+
+```bash
+for b in 0 -1 -2 -3 -4; do
+  echo "boot $b: $(journalctl -b $b | grep -c 'completion polled')"
+done
+```
+
+```text
+boot  0: 2
+boot -1: 7
+boot -2: 2
+boot -3: 4
+boot -4: 1
+```
+
+Bir oturumda yedi kez. Yedi kere otuz saniye.
+
+## Yanlış hipotez: APST
+
+İlk teorim APST'ydi (Autonomous Power State Transition): disk boştayken düşük
+power state'e geçiyor, uyanırken bir interrupt kaçırıyor. Teori makuldü ve ölçüm
+de destekliyordu — disk gerçekten agresif uyuyordu:
+
+```text
+$ sudo nvme get-feature /dev/nvme0 -f 0x0c -H
+Autonomous Power State Transition Enable (APSTE): Enabled
+Entry[0]  Idle Time Prior to Transition: 100 ms   -> power state 3
+Entry[3]  Idle Time Prior to Transition: 2000 ms  -> power state 4
+```
+
+100 milisaniye boşta kalınca uyuyan bir disk. Kapattım:
+
+```bash
+sudo grubby --update-kernel=ALL \
+  --args="nvme_core.default_ps_max_latency_us=0"
+```
+
+**İşe yaramadı.** O parametreyle açılan boot'ta takılmalar aynen sürdü:
+
+```text
+[   35.684191] nvme0: I/O tag 0   QID 6 timeout, completion polled
+[   96.870108] nvme0: I/O tag 257 QID 5 timeout, completion polled
+[  127.078093] nvme0: I/O tag 256 QID 5 timeout, completion polled
+[  227.942038] nvme0: I/O tag 930 QID 3 timeout, completion polled
+```
+
+Dahası, o boot'ta **giriş ekranı hiç gelmedi**. Siyah ekran. İlk refleksim
+"parametreyi verirken sistemi bozdum" oldu, ama önceki boot'un logu başka bir
+şey söylüyordu:
+
+```text
+[  127.078] nvme0: I/O tag 256 QID 5 timeout, completion polled
+[  128.163] plasma-login-kwin_wayland.service: Failed with result 'timeout'
+[  128.216] plasma-login-greeter: no Qt platform plugin could be initialized
+[  128.314] systemd-coredump: Process 1386 (plasma-login-wa) dumped core
+```
+
+Zincir okunuyor: takılma bu sefer display manager'ın başlangıç yoluna denk
+gelmişti. `plasma-login-kwin_wayland` systemd'nin start timeout'unu aştı ve
+öldürüldü. Wayland compositor'ı olmayınca greeter Qt platform plugin'ini
+başlatamadı ve çöktü. Ekran siyah kaldı.
+
+Buradan çıkan ders parametreyle ilgili değil: **"açılmıyor" her zaman bir
+boot hatası değildir.** Sistem açılmıştı; gelmeyen şey giriş ekranıydı.
+Böyle bir durumda `journalctl -b -1` ile bir önceki boot'un loguna bakmak,
+tahmin yürütmekten hızlıdır. Sebep orada düz metin olarak yazıyordu.
+
+## Gerçek sebep: Intel VMD
+
+Sıradaki soru şuydu: interrupt nerede kayboluyor? `/proc/interrupts` cevabı
+doğrudan verdi:
+
+```text
+178: ... VMD-PCI-MSIX-10000:e1:00.0    0  nvme0q0
+```
+
+İki şey var bu satırda. Birincisi `VMD-PCI-MSIX`: disk PCIe'ye doğrudan değil,
+**Intel VMD** (Volume Management Device) üzerinden bağlıydı. VMD, NVMe
+controller'larıyla CPU'nun arasına oturan ve interrupt'ları çoğullayan bir katman.
+
+İkincisi ve daha çarpıcı olanı, sayaç: **sıfır**. Disk on binlerce G/Ç
+yapmıştı ve tek bir interrupt sayılmamıştı. Interrupt'lar VMD katmanında toplanıyor,
+arada bir de düşüyordu.
+
+Diskin kendisi de durumu ağırlaştıran türdendi — **DRAM'siz** bir model:
+
+```text
+Micron 2500 NVMe SSD (DRAM-less) [1344:5425]
+kernel: nvme nvme0: allocated 64 MiB host memory buffer (16 segments)
+```
+
+Kendi cache'i yok; mapping table'ını tutmak için sistem belleğinden 64 MiB
+ödünç alıyor (HMB, Host Memory Buffer). Yani disk sürekli sistem belleğine DMA
+yapıyor. Bu trafiğin bir de VMD'nin adres ve interrupt remapping'inden
+geçmesi, kayıpların yaşandığı yer.
+
+## Çözüm BIOS'ta
+
+ASUS BIOS'ta: **Advanced → VMD Configuration → Enable VMD controller:
+Disabled**.
+
+Disk artık doğrudan PCIe'de:
+
+```text
+$ lspci -nn | grep -i non-volatile
+01:00.0 Non-Volatile memory controller: Micron 2500 NVMe SSD (DRAM-less)
+```
+
+Ve interrupt'lar gerçekten sayılıyor:
+
+```text
+$ grep nvme0q /proc/interrupts | head -2
+159: ... IR-PCI-MSIX-0000:01:00.0    0-edge   nvme0q0
+160: ... IR-PCI-MSIX-0000:01:00.0    1-edge   nvme0q1
+toplam: 34663 interrupt  (VMD ile: 0)
+```
+
+Bir uyarı: kaynaklar bu değişiklikten **önce** initramfs'i genelleştirmeyi
+öneriyor (`sudo dracut --regenerate-all --force --no-hostonly`), çünkü
+initramfs'te `nvme` driver'ı yoksa sistem VMD kapatıldığında açılmaz. Ben bunu
+çalıştırmadım ve makine yine de sorunsuz açıldı — Fedora'nın initramfs'i
+`nvme`'yi zaten içeriyor. Yine de risksiz olan yol önce initramfs'i
+hazırlamak. Geri dönmek istersen BIOS'ta tekrar `Enabled` yapman yeterli; kök
+`UUID=` ile bağlandığı için cihaz yolunun değişmesi sorun çıkarmıyor.
+
+Bir de yol üstünde bulunan küçük bir kazanç: `NetworkManager-wait-online`
+critical chain'de wifi DHCP'sini bekliyordu. Masaüstünde gereksiz, 6,4 saniye
+ediyordu.
+
+```bash
+sudo systemctl disable NetworkManager-wait-online.service
+```
+
+## Sonuç
+
+```text
+$ systemd-analyze
+Startup finished in 7.190s (firmware) + 2.745s (loader) + 1.587s (kernel)
+                  + 3.738s (initrd) + 2.879s (userspace) = 18.141s
+
+$ journalctl -b | grep -c "completion polled"
+0
+```
+
+| | Önce | Sonra |
+|---|---|---|
+| firmware | 7,1 s | 7,2 s |
+| loader | 2,4 s | 2,7 s |
+| kernel + initrd | 4,8 s | 5,3 s |
+| **userspace** | **38,8 s** | **2,9 s** |
+| **toplam** | **53,0 s** | **18,1 s** |
+| takılma / boot | 1–7 kez | **0** |
+
+Değişen tek şeyin userspace olduğuna dikkat: firmware ve loader aynı kaldı.
+Zaten öyle olması gerekiyordu — sorun diskin ilk okunduğu yerde değil, sistemin
+diski yoğun kullanmaya başladığı yerdeydi.
+
+Chrome de boot'tan sonra hiç çalıştırılmamışken, yani cache gerçekten
+boşken ölçüldü:
+
+```text
+GPU süreci : 0,051 s
+Renderer   : 0,091 s
+```
+
+Eskiden 30 saniye donan açılış, artık onda bir saniyenin altında.
+
+## APST parametresini geri aldım
+
+Yanlış hipotezin bıraktığı kernel parametresi hâlâ duruyordu. İşe
+yaramadığını zaten biliyordum ama makinede kalmasının bir bedeli vardı: APST
+kapalıyken disk boştayken uyumuyor, boşuna güç harcıyor.
+
+```bash
+sudo grubby --update-kernel=ALL \
+  --remove-args="nvme_core.default_ps_max_latency_us"
+```
+
+Parametresiz boot, parametreli boot'la bire bir aynı çıktı:
+
+```text
+$ grep -c nvme_core /proc/cmdline
+0
+$ cat /sys/module/nvme_core/parameters/default_ps_max_latency_us
+100000                        # APST tekrar açık
+$ journalctl -b | grep -c "completion polled"
+0
+$ systemd-analyze
+... = 18.147s
+```
+
+18,147 ile 18,141 arasındaki fark ölçüm gürültüsü. Yani takılmaları bitiren
+tek şey VMD'nin kapatılmasıydı; disk boştayken uyumaya devam edebilir ve bunun
+hiçbir bedeli yok.
+
+Bu adımı atlamak kolaydı — sorun zaten çözülmüştü. Ama işe yaramadığı
+kanıtlanmış bir parametre kernel komut satırında durmaya devam ederse, altı ay
+sonra başka bir şeyi ayıklarken "bu neden burada?" diye bakacağın gereksiz bir
+değişken olur.
+
+## Geriye kalan
+
+Üç şey aklımda kaldı.
+
+**Sessizlik de bir veridir.** Bu işi çözen tek gözlem, journal'da 31 saniye
+boyunca hiçbir satır olmamasıydı. Log okurken yazılana bakmaya alışığız; burada
+bilgi, yazılmayan yerdeydi.
+
+**Ölçülmemiş hipotez, çözüm sayılmaz.** APST teorisi makuldü, ölçüm onu
+destekliyordu ve yanlıştı. `nvme get-feature` çıktısı "disk agresif uyuyor"
+diyordu — doğruydu da, sadece problemle ilgisi yoktu. Doğru soru "bu bulgu
+gerçek mi" değil, "bu bulgu *bu* problemin sebebi mi".
+
+**Aynı anda iki şey bozulmuş gibi görünüyorsa, muhtemelen bir şey bozuktur.**
+Yavaş boot ve donan Chrome birbiriyle alakasız iki şikâyetti; ortak sebep,
+ikisinin de aynı 30 saniyeyi bekliyor olmasıydı.
+
+Not defterimdeki asıl kayıt biraz daha uzun ve tüm çıktıları içeriyor. Bu
+tür şeyleri artık düzenli olarak yazıyorum, çünkü aynı problemi ikinci kez
+sıfırdan araştırmak, ilkinden daha sinir bozucu.
