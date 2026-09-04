@@ -26,6 +26,10 @@ const alternates = {
   en: languages.includes('en') ? postPath('en', post.slug) : routes.en.blog,
   tr: languages.includes('tr') ? postPath('tr', post.slug) : routes.tr.blog,
 };
+
+// One share image for both the og:image tag and the schema.org node — computing
+// it twice is how they drifted apart.
+const shareImage = post.data.ogImage ?? post.data.cover?.src ?? '/og-default.png';
 ---
 
 <BaseLayout
@@ -33,10 +37,10 @@ const alternates = {
   description={post.data.description}
   lang={lang}
   alternates={alternates}
-  image={post.data.ogImage ?? post.data.cover?.src}
+  image={shareImage}
   type="article"
   publishedTime={post.data.pubDate}
-  jsonLd={blogPostingSchema(post, lang, Astro.url, site, post.data.ogImage ?? '/og-default.png')}
+  jsonLd={blogPostingSchema(post, lang, Astro.url, site, shareImage)}
 >
   <BlogPost post={post} lang={lang} newer={newer} older={older} />
 </BaseLayout>
