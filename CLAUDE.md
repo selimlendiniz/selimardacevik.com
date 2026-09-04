@@ -56,6 +56,15 @@ Rules:
   missing, the language switcher points at that language's blog index rather
   than a 404.
 - Every page emits `hreflang` alternate links for the languages it does have.
+- In Turkish prose, technical terms stay in English and take Turkish
+  suffixes after an apostrophe: `kernel'e`, `timeout'u`, `interrupt'lar`,
+  `boot'ta`. Do not translate them — readers work with the English terms in
+  logs, man pages and upstream docs, and a translated term breaks search.
+  Never translate: interrupt, timeout, kernel, boot, compositor, display
+  manager, controller, driver, cache, queue, plugin, pipeline.
+  Match term by term rather than word by word: the same Turkish word is not
+  always the term. `16 çekirdekli` is *cores*, not the kernel; `Chrome'un
+  ilk açılışı` is a *launch*, not a boot. Both stay Turkish.
 
 ## Content
 
